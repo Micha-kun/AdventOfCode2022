@@ -1,0 +1,25 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+# Codigo C# (LINQ)
+
+#!csharp
+
+Console.WriteLine("Hello Code-Generation!");
+
+#!markdown
+
+# Codigo F#
+
+#!fsharp
+
+open System.IO
+
+seq {
+    use reader = new StreamReader(File.OpenRead("Sample1.txt"))
+    while not reader.EndOfStream do
+        yield reader.ReadLine()
+}
