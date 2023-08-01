@@ -60,7 +60,27 @@ Find the Elf carrying the most Calories. How many total Calories is that Elf car
 
 #!csharp
 
-Console.WriteLine("Hello Code-Generation!");
+using System.IO;
+
+IEnumerable<string> GetFileData(string fileName) {
+    using var reader = new StreamReader(File.OpenRead(fileName));
+    while(!reader.EndOfStream){
+        yield return reader.ReadLine();
+    }
+}
+
+GetFileData("Sample1.txt").Select(x => x)
+                          .Reverse()
+                          .Aggregate(new [] { new string[] {}}, 
+                                     (acc, x) => 
+                                        { 
+                                            if (x == "") {
+                                                return new [] { new string[] {}}.Concat(acc).ToArray();
+                                            } else {
+                                                return new []{ acc[0].Prepend(x).ToArray()}.Concat(acc[1..]).ToArray();
+                                            }})
+                          .Select(items => items.Select(int.Parse).Sum())
+                          .Max()
 
 #!markdown
 
@@ -68,7 +88,27 @@ Console.WriteLine("Hello Code-Generation!");
 
 #!csharp
 
-Console.WriteLine("Hello Code-Generation!");
+using System.IO;
+
+IEnumerable<string> GetFileData(string fileName) {
+    using var reader = new StreamReader(File.OpenRead(fileName));
+    while(!reader.EndOfStream){
+        yield return reader.ReadLine();
+    }
+}
+
+GetFileData("Part1.txt").Select(x => x)
+                          .Reverse()
+                          .Aggregate(new [] { new string[] {}}, 
+                                     (acc, x) => 
+                                        { 
+                                            if (x == "") {
+                                                return new [] { new string[] {}}.Concat(acc).ToArray();
+                                            } else {
+                                                return new []{ acc[0].Prepend(x).ToArray()}.Concat(acc[1..]).ToArray();
+                                            }})
+                          .Select(items => items.Select(int.Parse).Sum())
+                          .Max()
 
 #!markdown
 
@@ -123,3 +163,136 @@ seq {
         head :: tail) [[]]
 |> List.map ((List.map int) >> List.sum)
 |> List.max
+
+#!markdown
+
+# Part 2
+By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most Calories of food might eventually run out of snacks.
+
+To avoid this unacceptable situation, the Elves would instead like to know the total Calories carried by the top three Elves carrying the most Calories. That way, even if one of those Elves runs out of snacks, they still have two backups.
+
+In the example above, the top three Elves are the fourth Elf (with 24000 Calories), then the third Elf (with 11000 Calories), then the fifth Elf (with 10000 Calories). The sum of the Calories carried by these three elves is 45000.
+
+Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
+
+#!markdown
+
+## Código C# (LINQ)
+
+#!markdown
+
+### Sample 2
+
+#!csharp
+
+using System.IO;
+
+IEnumerable<string> GetFileData(string fileName) {
+    using var reader = new StreamReader(File.OpenRead(fileName));
+    while(!reader.EndOfStream){
+        yield return reader.ReadLine();
+    }
+}
+
+GetFileData("Sample1.txt").Select(x => x)
+                          .Reverse()
+                          .Aggregate(new [] { new string[] {}}, 
+                                     (acc, x) => 
+                                        { 
+                                            if (x == "") {
+                                                return new [] { new string[] {}}.Concat(acc).ToArray();
+                                            } else {
+                                                return new []{ acc[0].Prepend(x).ToArray()}.Concat(acc[1..]).ToArray();
+                                            }})
+                          .Select(items => items.Select(int.Parse).Sum())
+                          .OrderDescending()
+                          .Take(3)
+                          .Sum()
+
+#!markdown
+
+### Part 2
+
+#!csharp
+
+using System.IO;
+
+IEnumerable<string> GetFileData(string fileName) {
+    using var reader = new StreamReader(File.OpenRead(fileName));
+    while(!reader.EndOfStream){
+        yield return reader.ReadLine();
+    }
+}
+
+GetFileData("Part1.txt").Select(x => x)
+                          .Reverse()
+                          .Aggregate(new [] { new string[] {}}, 
+                                     (acc, x) => 
+                                        { 
+                                            if (x == "") {
+                                                return new [] { new string[] {}}.Concat(acc).ToArray();
+                                            } else {
+                                                return new []{ acc[0].Prepend(x).ToArray()}.Concat(acc[1..]).ToArray();
+                                            }})
+                          .Select(items => items.Select(int.Parse).Sum())
+                          .OrderDescending()
+                          .Take(3)
+                          .Sum()
+
+#!markdown
+
+## Código F#
+
+#!markdown
+
+### Sample 2
+
+#!fsharp
+
+open System.IO
+
+seq {
+    use reader = new StreamReader(File.OpenRead("Sample1.txt"))
+    while not reader.EndOfStream do
+        yield reader.ReadLine()
+}
+|> Seq.rev
+|> List.ofSeq
+|> List.fold (fun (state: string list list) x  -> 
+    match x with
+    | "" -> [[]] @ state
+    | value ->
+        let head = state |> List.head |> List.append [ value ]
+        let tail = state |> List.tail
+        head :: tail) [[]]
+|> List.map ((List.map int) >> List.sum)
+|> List.sortDescending
+|> List.take 3
+|> List.sum
+
+#!markdown
+
+### Part 2
+
+#!fsharp
+
+open System.IO
+
+seq {
+    use reader = new StreamReader(File.OpenRead("Part1.txt"))
+    while not reader.EndOfStream do
+        yield reader.ReadLine()
+}
+|> Seq.rev
+|> List.ofSeq
+|> List.fold (fun (state: string list list) x  -> 
+    match x with
+    | "" -> [[]] @ state
+    | value ->
+        let head = state |> List.head |> List.append [ value ]
+        let tail = state |> List.tail
+        head :: tail) [[]]
+|> List.map ((List.map int) >> List.sum)
+|> List.sortDescending
+|> List.take 3
+|> List.sum
